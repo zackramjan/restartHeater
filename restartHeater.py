@@ -12,7 +12,7 @@ def logIt(msg):
     print(str(datetime.now()) + ": " + msg, file=sys.stderr, flush=True)
 
 def main(argv=None): 
-    powerStackMW = [0,0,0,0,0,0,10001]
+    powerStackMW = [0,0,0,0,0,0,0,0,0,0,0,0,0,20001]
     while True:
         try:
             plug = SmartPlug("192.168.1.83")
@@ -21,13 +21,13 @@ def main(argv=None):
             total = sum(powerStackMW)
             logIt("Current state: %s" % plug.state + " - Current consumption: %s" % plug.get_emeter_realtime() + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
-            if total < 10000 and "ON" in plug.state:
+            if total < 20000 and "ON" in plug.state:
                 logIt("turning OFF")
                 plug.turn_off()
                 time.sleep(35)
                 logIt("turning ON")
                 plug.turn_on()
-                powerStackMW.append(10001)
+                powerStackMW.append(20001)
                 powerStackMW.pop(0)
         
         except:
