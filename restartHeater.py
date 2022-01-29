@@ -12,7 +12,7 @@ def logIt(msg):
     print(str(datetime.now()) + ": " + msg, file=sys.stderr, flush=True)
 
 def main(argv=None): 
-    powerStackMW = [0,0,0,0,0,0,0,0,0,0,0,0,0,20001]
+    powerStackMW = [0,0,0,0,0,0,0,0,0,0,0,0,20001]
     while True:
         try:
             plug = SmartPlug("192.168.1.83")
