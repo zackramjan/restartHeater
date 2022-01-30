@@ -32,6 +32,7 @@ def main(argv=None):
         
         except:
             traceback.print_exc()
+            powerStackMW = [0,0,0,0,0,0,0,0,0,0,0,0,20001]
         time.sleep(60) 
 
 if __name__ == '__main__':
