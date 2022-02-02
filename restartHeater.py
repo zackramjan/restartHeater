@@ -26,7 +26,7 @@ def main(argv=None):
             total = sum(powerStackMW)
             logIt("Current state: %s" % plug.state + " - Current consumption: %s" % plug.get_emeter_realtime() + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
-            if total < heaterActivePower and "ON" in plug.state:
+            if "ON" in plug.state and (total < heaterActivePower or (powerStackMW[-2] > heaterActivePower and powerStackMW[-1] + powerStackMW[-3] < heaterActivePower)):
                 logIt("turning OFF")
                 plug.turn_off()
                 time.sleep(35)
