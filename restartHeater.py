@@ -3,6 +3,7 @@ import json
 import sys
 import time
 import traceback
+from os import environ
 from datetime import date, datetime
 
 
@@ -14,6 +15,9 @@ def logIt(msg):
 def main(argv=None): 
     heaterActivePower = 60000
     powerStackSize = 30
+    if "POWERDEPTH" in environ:
+       powerStackSize = int(environ["POWERDEPTH"])
+
     powerStackMW = []
     for i in range(powerStackSize):
         powerStackMW.append(1400)
@@ -24,7 +28,7 @@ def main(argv=None):
             e = plug.get_emeter_realtime()
             powerStackMW.append(e['power_mw'])
             total = sum(powerStackMW)
-            logIt("Current state: %s" % plug.state + " - Current consumption: %s" % plug.get_emeter_realtime() + " last: %s" % powerStackMW)
+            logIt("Current state: %s" % plug.state + " - Current consumption: %s" % e + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
             if "ON" in plug.state and (total < heaterActivePower or (powerStackMW[-2] > heaterActivePower and powerStackMW[-1] + powerStackMW[-3] < heaterActivePower)):
                 logIt("turning OFF")
