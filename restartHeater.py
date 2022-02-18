@@ -13,7 +13,7 @@ def logIt(msg):
     print(str(datetime.now()) + ": " + msg, file=sys.stderr, flush=True)
 
 def main(argv=None): 
-    heaterActivePower = 60
+    heaterActivePower = 50
     powerStackSize = 30
     if "POWERDEPTH" in environ:
        powerStackSize = int(environ["POWERDEPTH"])
@@ -30,14 +30,20 @@ def main(argv=None):
             total = sum(powerStackMW)
             logIt("Current state: %s" % plug.state + " - Current consumption: %s" % e + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
-            if "ON" in plug.state and (total < heaterActivePower or (powerStackMW[-2] > heaterActivePower and powerStackMW[-1] + powerStackMW[-3] < heaterActivePower)):
-                logIt("turning OFF")
+            if "ON" in plug.state and total < heaterActivePower:
+                logIt("turning OFF (timeout)")
                 plug.turn_off()
                 time.sleep(35)
                 logIt("turning ON")
                 plug.turn_on()
                 powerStackMW.append(heaterActivePower)
                 powerStackMW.pop(0)
+            elif "ON" in plug.state and ((powerStackMW[-2] > heaterActivePower and powerStackMW[-1] + powerStackMW[-3] < heaterActivePower) or (powerStackMW[-2] > heaterActivePower and powerStackMW[-3] > heaterActivePower and powerStackMW[-1] + powerStackMW[-4] < heaterActivePower)):
+                logIt("turning OFF (short cycle)")
+                plug.turn_off()
+                time.sleep(35)
+                logIt("turning ON")
+                plug.turn_on()
        
         except:
             traceback.print_exc()
