@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 import sys
-import time
+from time import time, sleep
 import traceback
 from os import environ
 from datetime import date, datetime
@@ -29,19 +29,19 @@ def main(argv=None):
             e = plug.get_emeter_realtime()
             powerStackMW.append(round(e['power_mw']/1000))
             maxWattage = max(powerStackMW)
-            logIt("Current state: %s" % plug.state + " - Current consumption: %s" % e + " last: %s" % powerStackMW)
+            logIt("Current state: %s" % plug.state + " - %s" % e + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
             if "ON" in plug.state and maxWattage < heaterActivePower and time() - lastTimeCheck > powerStackSize * 60:
                 lastTimeCheck = time()
                 logIt("turning OFF (timeout)")
                 plug.turn_off()
-                time.sleep(35)
+                sleep(35)
                 logIt("turning ON")
                 plug.turn_on()
             elif "ON" in plug.state and powerStackMW[-1] < heaterActivePower and powerStackMW[-2] > heaterActivePower and (powerStackMW[-3] < heaterActivePower or powerStackMW[-4] < heaterActivePower):
                 logIt("turning OFF (short cycle)")
                 plug.turn_off()
-                time.sleep(35)
+                sleep(35)
                 logIt("turning ON")
                 plug.turn_on()
        
@@ -53,7 +53,7 @@ def main(argv=None):
                 powerStackMW.append(1)
               
 
-        time.sleep(60) 
+        sleep(60) 
 
 if __name__ == '__main__':
     sys.exit(main())
