@@ -15,6 +15,7 @@ def logIt(msg):
 def main(argv=None): 
     heaterActivePower = 50
     powerStackSize = 30
+    lastTimeCheck = 0;
     if "POWERDEPTH" in environ:
        powerStackSize = int(environ["POWERDEPTH"])
 
@@ -27,18 +28,17 @@ def main(argv=None):
             plug = SmartPlug("192.168.1.83")
             e = plug.get_emeter_realtime()
             powerStackMW.append(round(e['power_mw']/1000))
-            total = sum(powerStackMW)
+            maxWattage = max(powerStackMW)
             logIt("Current state: %s" % plug.state + " - Current consumption: %s" % e + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
-            if "ON" in plug.state and total < heaterActivePower:
+            if "ON" in plug.state and maxWattage < heaterActivePower and time() - lastTimeCheck > powerStackSize * 60:
+                lastTimeCheck = time()
                 logIt("turning OFF (timeout)")
                 plug.turn_off()
                 time.sleep(35)
                 logIt("turning ON")
                 plug.turn_on()
-                powerStackMW.append(heaterActivePower)
-                powerStackMW.pop(0)
-            elif "ON" in plug.state and ((powerStackMW[-2] > heaterActivePower and powerStackMW[-1] + powerStackMW[-3] < heaterActivePower) or (powerStackMW[-2] > heaterActivePower and powerStackMW[-3] > heaterActivePower and powerStackMW[-1] + powerStackMW[-4] < heaterActivePower)):
+            elif "ON" in plug.state and powerStackMW[-1] < heaterActivePower and powerStackMW[-2] > heaterActivePower and (powerStackMW[-3] < heaterActivePower or powerStackMW[-4] < heaterActivePower):
                 logIt("turning OFF (short cycle)")
                 plug.turn_off()
                 time.sleep(35)
@@ -48,9 +48,10 @@ def main(argv=None):
         except:
             traceback.print_exc()
             powerStackMW = []
+            lastTimeCheck = time()
             for i in range(powerStackSize - 1):
                 powerStackMW.append(1)
-            powerStackMW.append(heaterActivePower)    
+              
 
         time.sleep(60) 
 
