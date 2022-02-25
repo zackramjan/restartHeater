@@ -10,7 +10,7 @@ from datetime import date, datetime
 import requests
 from pyHS100 import SmartPlug, SmartBulb
 def logIt(msg):
-    print(str(datetime.now()) + ": " + msg.replace(", 1","1").replace(", 2","2").replace(", 0","0").replace(", ",","), file=sys.stderr, flush=True)
+    print(str(datetime.now())[0:15] + ": " + msg.replace(", 1","1").replace(", 2","2").replace(", 0","0").replace(", ",","), file=sys.stderr, flush=True)
 
 def main(argv=None): 
     heaterActivePower = 50
@@ -29,7 +29,7 @@ def main(argv=None):
             e = plug.get_emeter_realtime()
             powerStackMW.append(round(e['power_mw']/1000))
             maxWattage = max(powerStackMW)
-            logIt("Current state: %s" % plug.state + " - %s" % e + " last: %s" % powerStackMW)
+            logIt("%s" % plug.state + " - %s" % e + " last: %s" % powerStackMW)
             powerStackMW.pop(0)
             if "ON" in plug.state and maxWattage < heaterActivePower and time() - lastTimeCheck > powerStackSize * 60:
                 lastTimeCheck = time()
