@@ -10,7 +10,7 @@ from datetime import date, datetime
 import requests
 from pyHS100 import SmartPlug, SmartBulb
 def logIt(msg):
-    print(str(datetime.now())[0:15] + ": " + msg.replace(", 1","1").replace(", 2","2").replace(", 0","0").replace(", ",","), file=sys.stderr, flush=True)
+    print(str(datetime.now())[0:16] + ": " + msg.replace(", 1","1").replace(", 2","2").replace(", 0","0").replace(", ",","), file=sys.stderr, flush=True)
 
 def main(argv=None): 
     heaterActivePower = 50
