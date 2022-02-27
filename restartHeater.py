@@ -9,8 +9,20 @@ from datetime import date, datetime
 
 import requests
 from pyHS100 import SmartPlug, SmartBulb
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def logIt(msg):
-    print(str(datetime.now())[0:16] + ": " + msg.replace(", 1","1").replace(", 2","2").replace(", 0","0").replace(", ",","), file=sys.stderr, flush=True)
+    print(str(datetime.now())[0:16] + ": " + msg.replace(", 5",bcolors.HEADER + "5" + bcolors.ENDC).replace(", 6",bcolors.HEADER + "6" + bcolors.ENDC).replace(", ",""), file=sys.stderr, flush=True)
 
 def main(argv=None): 
     heaterActivePower = 50
