@@ -28,6 +28,7 @@ def main(argv=None):
     heaterActivePower = 50
     powerStackSize = 30
     lastTimeCheck = 0;
+    CheckPowerOn = False
     if "POWERDEPTH" in environ:
        powerStackSize = int(environ["POWERDEPTH"])
 
@@ -38,6 +39,10 @@ def main(argv=None):
     while True:
         try:
             plug = SmartPlug("192.168.1.83")
+            if CheckPowerOn:
+                plug.turn_on() 
+                CheckPowerOn = False
+          
             e = plug.get_emeter_realtime()
             powerStackMW.append(round(e['power_mw']/1000))
             maxWattage = max(powerStackMW)
@@ -58,6 +63,7 @@ def main(argv=None):
                 plug.turn_on()
        
         except:
+            CheckPowerOn = True
             traceback.print_exc()
             powerStackMW = []
             lastTimeCheck = time()
