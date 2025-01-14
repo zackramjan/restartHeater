@@ -22,7 +22,19 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def logIt(msg):
-    print(str(datetime.now())[0:16] + ": " + msg.replace(", 5",bcolors.HEADER + "5" + bcolors.ENDC).replace(", 6",bcolors.HEADER + "6" + bcolors.ENDC).replace(", ",""), file=sys.stderr, flush=True)
+    print(str(datetime.now())[0:16] + ": " + msg, file=sys.stderr, flush=True)
+
+def powerToString(powerList):
+    enc = ""
+    for i in powerList:
+        if i > 50:
+            enc += bcolors.HEADER + "^" + bcolors.ENDC 
+        elif i > 0:
+            enc += "."
+        else:
+            enc += "_"
+    return enc        
+
 
 def main(argv=None): 
     heaterActivePower = 50
@@ -46,7 +58,7 @@ def main(argv=None):
             e = plug.get_emeter_realtime()
             powerStackMW.append(round(e['power_mw']/1000))
             maxWattage = max(powerStackMW)
-            logIt("%s" % plug.state + " - %s" % e + " last: %s" % powerStackMW)
+            logIt("%s" % plug.state + " - %s" % e + " last: %s" % powerToString(powerStackMW))
             powerStackMW.pop(0)
             if "ON" in plug.state and maxWattage < heaterActivePower and time() - lastTimeCheck > powerStackSize * 60:
                 lastTimeCheck = time()
