@@ -58,7 +58,7 @@ def main(argv=None):
             e = plug.get_emeter_realtime()
             powerStackMW.append(round(e['power_mw']/1000))
             maxWattage = max(powerStackMW)
-            logIt("%s" % plug.state + " - %s" % e + " last: %s" % powerToString(powerStackMW))
+            logIt("%s" % plug.state + " { voltage_mv %s, " % e['voltage_mv'] + "power_mw %s }" % e['power_mw'] + " last: %s" % powerToString(powerStackMW))
             powerStackMW.pop(0)
             if "ON" in plug.state and maxWattage < heaterActivePower and time() - lastTimeCheck > powerStackSize * 60:
                 lastTimeCheck = time()
