@@ -17,7 +17,7 @@ def main(argv=None):
     heaterActivePower = 50
     MaxIntervalSinceLastRunMinutes = 60 
     CheckPowerOn = False
-    timeLastWorking =  datetime.now()
+    timeLastWorking =  time()
     powerT0 = 0
     powerT1 = 0
     powerT2 = 0
@@ -41,9 +41,9 @@ def main(argv=None):
             powerT0 = round(e['power_mw']/1000)
 
             if powerT0+powerT1+powerT2 > heaterActivePower * 3:
-                timeLastWorking =  datetime.now()
+                timeLastWorking =  time()
 
-            if "ON" in plug.state and powerT0 < heaterActivePower and datetime.now() - timeLastWorking > MaxIntervalSinceLastRunMinutes * 60:
+            if "ON" in plug.state and powerT0 < heaterActivePower and time() - timeLastWorking > MaxIntervalSinceLastRunMinutes * 60:
                 logIt("turning OFF (timeout)")
                 plug.turn_off()
                 sleep(35)
