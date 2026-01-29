@@ -16,8 +16,10 @@ def logIt(msg):
 def main(argv=None): 
     heaterActivePower = 50
     MaxIntervalSinceLastRunMinutes = 60 
+    snoozeIntervalMinutes = 5
     CheckPowerOn = False
     timeLastWorking =  time()
+    snoozeStartTime =  time()
     powerT0 = 0
     powerT1 = 0
     powerT2 = 0
@@ -43,7 +45,8 @@ def main(argv=None):
             if powerT0+powerT1+powerT2 > heaterActivePower * 3:
                 timeLastWorking =  time()
 
-            if "ON" in plug.state and powerT0 < heaterActivePower and time() - timeLastWorking > MaxIntervalSinceLastRunMinutes * 60:
+            if "ON" in plug.state and powerT0 < heaterActivePower and time() - timeLastWorking > MaxIntervalSinceLastRunMinutes * 60 and time() - snoozeStartTime > snoozeIntervalMinutes * 60:
+                snoozeStartTime = time()
                 logIt("turning OFF (timeout)")
                 plug.turn_off()
                 sleep(35)
