@@ -16,7 +16,7 @@ def logIt(msg):
 def main(argv=None): 
     heaterActivePower = 50
     MaxIntervalSinceLastRunMinutes = 60 
-    snoozeIntervalMinutes = 5
+    snoozeIntervalMinutes = 10
     CheckPowerOn = False
     timeLastWorking =  time()
     snoozeStartTime =  time()
@@ -24,8 +24,10 @@ def main(argv=None):
     powerT1 = 0
     powerT2 = 0
     
-    if "POWERDEPTH" in environ:
-       MaxIntervalSinceLastRunMinutes = int(environ["POWERDEPTH"])
+    if "RUNINTERVAL" in environ:
+       MaxIntervalSinceLastRunMinutes = int(environ["RUNINTERVAL"])
+    if "SNOOZEINTERVAL" in environ:
+       snoozeIntervalMinutes = int(environ["SNOOZEINTERVAL"])
 
     while True:
         try:
